@@ -8,22 +8,50 @@
     <h1>FAWB ATC Trainer</h1>
 
     <p id="atcText">
-        FAWB Tower, ZS-ABC ready for departure runway 29.
+        ZS-ABC, taxi to runway 29 via Alpha, Bravo, hold short runway 23.
     </p>
 
-    <button onclick="speak()">Play Transmission</button>
+    <button id="speakBtn" onclick="speak()">Play ATC Instruction</button>
 
     <script>
+        let isSpeaking = false;
+
         function speak() {
-            var text = document.getElementById("atcText").innerText;
-            var msg = new SpeechSynthesisUtterance(text);
-            
-            msg.rate = 1;
-            msg.pitch = 1;
+
+            if (isSpeaking) return; // prevents spam clicking
+
+            let text = document.getElementById("atcText").innerText;
+            let msg = new SpeechSynthesisUtterance(text);
+
+            // Make it sound more like ATC
+            msg.rate = 1.05;   // slightly faster
+            msg.pitch = 0.9;   // slightly flatter
             msg.volume = 1;
 
-            window.speechSynthesis.speak(msg);
+            // Try to select a better voice
+            let voices = speechSynthesis.getVoices();
+            for (let i = 0; i < voices.length; i++) {
+                if (voices[i].name.includes("Google") || voices[i].name.includes("English")) {
+                    msg.voice = voices[i];
+                    break;
+                }
+            }
+
+            isSpeaking = true;
+            document.getElementById("speakBtn").disabled = true;
+
+            msg.onend = function() {
+                isSpeaking = false;
+                document.getElementById("speakBtn").disabled = false;
+            };
+
+            speechSynthesis.speak(msg);
         }
+
+        // Load voices properly (important for Chrome)
+        speechSynthesis.onvoiceschanged = function() {
+            speechSynthesis.getVoices();
+        };
     </script>
 
 </body>
