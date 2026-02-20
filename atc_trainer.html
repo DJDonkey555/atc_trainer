@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FAWB ATC Trainer</title>
+</head>
+<body style="font-family: Arial; text-align: center; margin-top: 100px;">
+
+    <h1>FAWB ATC Trainer</h1>
+
+    <p id="atcText">
+        FAWB Tower, ZS-ABC ready for departure runway 29.
+    </p>
+
+    <button onclick="speak()">Play Transmission</button>
+
+    <script>
+        function speak() {
+            var text = document.getElementById("atcText").innerText;
+            var msg = new SpeechSynthesisUtterance(text);
+            
+            msg.rate = 1;
+            msg.pitch = 1;
+            msg.volume = 1;
+
+            window.speechSynthesis.speak(msg);
+        }
+    </script>
+
+</body>
+</html>
